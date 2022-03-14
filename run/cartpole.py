@@ -10,7 +10,7 @@ env = gym.make('CartPole-v0')
 x = env.reset()
 for _ in range(1000):
     env.render()
-    u = np.matmul(K, x)
+    u = np.matmul(-K, x)
     if u < 0:
         u = 0
     else:
