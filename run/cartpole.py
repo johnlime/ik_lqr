@@ -2,11 +2,11 @@ import gym
 import numpy as np
 import pickle
 
-with open('run/cartpole_system_model/controller.pkl', 'rb') as filepath:
+with open('run/cartpole_system_model/best_controller.pkl', 'rb') as filepath:
     controller_dict = pickle.load(filepath)
 K = controller_dict['K']
 
-env = gym.make('CartPole-v0')
+env = gym.make('CartPole-v1')
 x = env.reset()
 for _ in range(1000):
     env.render()
