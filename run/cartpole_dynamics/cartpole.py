@@ -2,7 +2,7 @@ import gym
 import numpy as np
 import pickle
 
-with open('run/cartpole_system_model/best_controller.pkl', 'rb') as filepath:
+with open('run/cartpole_dynamics/cartpole_system_model/dare_controller.pkl', 'rb') as filepath:
     controller_dict = pickle.load(filepath)
 K = controller_dict['K']
 
@@ -18,3 +18,5 @@ for iter_num in range(10):
             u = 1
         x, _, done, _ = env.step(u)
 env.close()
+
+# will add CUI later
