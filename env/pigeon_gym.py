@@ -27,6 +27,7 @@ LIMB_FRICTION = 5
 VIEWPORT_SCALE = 6.0
 FPS = 60
 
+# target head position relative to the resting head position
 HEAD_OFFSET_X = 10
 HEAD_OFFSET_Y = 2
 
