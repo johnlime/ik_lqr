@@ -1,5 +1,10 @@
 from env.pigeon_gym import PigeonEnv3Joints, BODY_WIDTH, BODY_HEIGHT, LIMB_WIDTH, LIMB_HEIGHT, HEAD_WIDTH, ANGLE_FREEDOM, MAX_JOINT_TORQUE, MAX_JOINT_SPEED, VELOCITY_WEIGHT, LIMB_DENSITY, LIMB_FRICTION
 
+import numpy as np
+from math import pi, sqrt
+from Box2D import *
+from copy import copy, deepcopy
+
 class IKPigeon(PigeonEnv3Joints):
     def __init__(self,
                  body_speed = 0,
@@ -108,12 +113,23 @@ class IKPigeon(PigeonEnv3Joints):
         # (self.head{relative}, self.joints -> obs) operation
         obs = np.array(self.head.position) - np.array(self.body.position)
         obs = np.concatenate((obs, self.head.angle), axis = None)
-        for i in range(len(self.joints)):
-            obs = np.concatenate((obs, self.joints[i].angle), axis = None)
-            obs = np.concatenate((obs, self.joints[i].speed), axis = None)
-        obs = np.concatenate((obs, self.body.position[0]), axis = None)
 
-        # complement a target position
+        # more appropriate to add joint angles relative to root rather than head angles
+        # offset angles (counter-clockwise is positive)
+        for i in range(len(self.joints)):
+            angle_tmp = self.joints[i].angle
+            if i == 0:
+                angle_tmp -= pi / 4
+            elif i == len(self.joints) - 1:
+                angle_tmp += pi / 4
+            # cap angle_tmp range
+
+
+            obs = np.concatenate((obs, angle_tmp), axis = None)
+            obs = np.concatenate((obs, self.joints[i].speed), axis = None)
+
+        # complement the body's x position and the target position
+        obs = np.concatenate((obs, self.body.position[0]), axis = None)
         obs = np.concatenate((obs, self.head_target_location - np.array(self.body.position)),
                               axis = None)
 
