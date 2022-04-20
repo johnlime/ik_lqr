@@ -118,12 +118,16 @@ class IKPigeon(PigeonEnv3Joints):
         # offset angles (counter-clockwise is positive)
         for i in range(len(self.joints)):
             angle_tmp = self.joints[i].angle
+            # turn default angle from 0 to pi/2 since everything is pointing to negative
+            # optional move is to redesign the model to face the positive direction
+            angle_tmp += pi
+
             if i == 0:
                 angle_tmp -= pi / 4
             elif i == len(self.joints) - 1:
                 angle_tmp += pi / 4
-            # cap angle_tmp range
 
+            # probably no need to cap angle_tmp range
 
             obs = np.concatenate((obs, angle_tmp), axis = None)
             obs = np.concatenate((obs, self.joints[i].speed), axis = None)
