@@ -120,7 +120,8 @@ class IKPigeon(PigeonEnv3Joints):
             angle_tmp = self.joints[i].angle
             # turn default angle from 0 to pi/2 since everything is pointing to negative
             # optional move is to redesign the model to face the positive direction
-            angle_tmp += pi
+            # angle_tmp += pi
+            # might be more intuitive to use negative x (length)
 
             if i == 0:
                 angle_tmp -= pi / 4
@@ -132,7 +133,7 @@ class IKPigeon(PigeonEnv3Joints):
             obs = np.concatenate((obs, angle_tmp), axis = None)
             obs = np.concatenate((obs, self.joints[i].speed), axis = None)
 
-        # complement the body's x position and the target position
+        # complement the body's x position and the relative target position
         obs = np.concatenate((obs, self.body.position[0]), axis = None)
         obs = np.concatenate((obs, self.head_target_location - np.array(self.body.position)),
                               axis = None)
