@@ -121,12 +121,12 @@ class IKPigeon(PigeonEnv3Joints):
             # turn default angle from 0 to pi/2 since everything is pointing to negative
             # optional move is to redesign the model to face the positive direction
             # angle_tmp += pi
-            # might be more intuitive to use negative x (length)
+            # might be more intuitive to use negative x (length) and positive y
 
             if i == 0:
-                angle_tmp -= pi / 4
-            elif i == len(self.joints) - 1:
                 angle_tmp += pi / 4
+            elif i == len(self.joints) - 1:
+                angle_tmp -= pi / 4
 
             # probably no need to cap angle_tmp range
 
@@ -141,3 +141,27 @@ class IKPigeon(PigeonEnv3Joints):
         obs = np.float32(obs)
         assert self.observation_space.contains(obs)
         return obs
+
+
+
+def calc_end_effector_pos(body_to_head_angles):
+    """
+    body_to_head_angles: array of joint angles starting from those
+    closest to the body to the those furthest from the body
+    """
+    end_effector = np.tile(
+        np.array([- BODY_WIDTH, BODY_HEIGHT]).astype(np.float),
+        (len(body_to_head_angles), 1))
+
+    angle_cumul = 0
+    i = 0
+    for i in range(len(body_to_head_angles)):
+        angle_cumul += body_to_head_angles[i]
+        print(angle_cumul)
+        coef = 2 * LIMB_WIDTH
+        if i == len(body_to_head_angles) - 1:
+            coef = HEAD_WIDTH
+        end_effector[i:, :] += coef * \
+            np.array([-np.cos(angle_cumul), np.sin(angle_cumul)])
+
+    return end_effector
