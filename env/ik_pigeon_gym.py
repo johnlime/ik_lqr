@@ -122,11 +122,12 @@ class IKPigeon(PigeonEnv3Joints):
             # optional move is to redesign the model to face the positive direction
             # angle_tmp += pi
             # might be more intuitive to use negative x (length) and positive y
+            # flip angle_tmp by the BOTH x AND y axis before output (to set clockwise as positive # to set the x axis from positive to negative domain)
 
             if i == 0:
-                angle_tmp += pi / 4
-            elif i == len(self.joints) - 1:
                 angle_tmp -= pi / 4
+            elif i == len(self.joints) - 1:
+                angle_tmp += pi / 4
 
             # probably no need to cap angle_tmp range
 
@@ -157,11 +158,11 @@ def calc_end_effector_pos(body_to_head_angles):
     i = 0
     for i in range(len(body_to_head_angles)):
         angle_cumul += body_to_head_angles[i]
-        print(angle_cumul)
         coef = 2 * LIMB_WIDTH
         if i == len(body_to_head_angles) - 1:
             coef = HEAD_WIDTH
-        end_effector[i:, :] += coef * \
-            np.array([-np.cos(angle_cumul), np.sin(angle_cumul)])
+        # flip angle_tmp by the y axis before output
+        end_effector[i:, :] -= coef * \
+            np.array([np.cos(angle_cumul), np.sin(angle_cumul)])
 
     return end_effector
