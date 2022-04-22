@@ -118,10 +118,7 @@ class IKPigeon(PigeonEnv3Joints):
         # offset angles (counter-clockwise is positive)
         for i in range(len(self.joints)):
             angle_tmp = self.joints[i].angle
-            # turn default angle from 0 to pi/2 since everything is pointing to negative
-            # optional move is to redesign the model to face the positive direction
-            # angle_tmp += pi
-            # might be more intuitive to use negative x (length) and positive y
+            # intuitive to use negative x (length) and positive y
             # flip angle_tmp by the BOTH x AND y axis before output (to set clockwise as positive # to set the x axis from positive to negative domain)
 
             if i == 0:
