@@ -153,9 +153,9 @@ class IKPigeon(PigeonEnv3Joints):
 
         # VELOCITY OR MOTOR CONTROL
         for i in range(len(self.joints)):
-            # Copied from bipedal_walker
+            # "action space" should reflect real joint speed derived using Jacobian
             if self.velocity_control:
-                self.joints[i].motorSpeed = float(MAX_JOINT_SPEED * (VELOCITY_WEIGHT ** i) * np.sign(action[i], -1, 1))
+                self.joints[i].motorSpeed = np.clip(action[i], float(- MAX_JOINT_SPEED), float(MAX_JOINT_SPEED)))
             else:
                 self.joints[i].motorSpeed = float(MAX_JOINT_SPEED * (VELOCITY_WEIGHT ** i) * np.sign(action[i]))
                 self.joints[i].maxMotorTorque = float(
