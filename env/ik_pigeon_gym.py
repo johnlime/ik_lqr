@@ -1,4 +1,4 @@
-from env.pigeon_gym import PigeonEnv3Joints, BODY_WIDTH, BODY_HEIGHT, LIMB_WIDTH, LIMB_HEIGHT, HEAD_WIDTH, ANGLE_FREEDOM, MAX_JOINT_TORQUE, MAX_JOINT_SPEED, VELOCITY_WEIGHT, LIMB_DENSITY, LIMB_FRICTION
+from env.pigeon_gym import *
 
 import numpy as np
 from math import pi, sqrt
@@ -10,9 +10,11 @@ class IKPigeon(PigeonEnv3Joints):
                  body_speed = 0,
                  reward_code = "head_stable_manual_reposition",
                  max_offset = 0.5,
-                 joints = 3):
+                 joints = 3,
+                 velocity_control = True):
 
         self.num_joints = joints - 1
+        self.velocity_control = velocity_control
         super().__init__(
             body_speed = body_speed,
             reward_code = reward_code,
@@ -139,6 +141,33 @@ class IKPigeon(PigeonEnv3Joints):
         obs = np.float32(obs)
         assert self.observation_space.contains(obs)
         return obs
+
+    def step(self, action):
+        assert self.action_space.contains(action)
+        # self.world.Step(self.timeStep, self.vel_iters, self.pos_iters)
+        # Framework handles this differently
+        # Referenced bipedal_walker
+        # self.world.Step(1.0 / 50, 6 * 30, 2 * 30)
+        self.world.Step(1.0 / FPS, self.vel_iters, self.pos_iters)
+        obs = self._get_obs()
+
+        # VELOCITY OR MOTOR CONTROL
+        for i in range(len(self.joints)):
+            # Copied from bipedal_walker
+            if self.velocity_control:
+                self.joints[i].motorSpeed = float(MAX_JOINT_SPEED * (VELOCITY_WEIGHT ** i) * np.sign(action[i], -1, 1))
+            else:
+                self.joints[i].motorSpeed = float(MAX_JOINT_SPEED * (VELOCITY_WEIGHT ** i) * np.sign(action[i]))
+                self.joints[i].maxMotorTorque = float(
+                    MAX_JOINT_TORQUE * np.clip(np.abs(action[i]), 0, 1)
+                )
+
+        reward = self.reward_function()
+
+        done = False
+        info = {}
+        return obs, reward, done, info
+
 
 """
 Misc functions that may be useful for this environment
