@@ -20,6 +20,11 @@ class IKPigeon(PigeonEnv3Joints):
             reward_code = reward_code,
             max_offset = max_offset)
 
+        self.action_space = spaces.Box(
+            low = np.array([-np.inf] * 3).astype(np.float32),
+            high = np.array([np.inf] * 3).astype(np.float32),
+        )
+
     """
     Box2D Pigeon Model
     """
@@ -155,7 +160,7 @@ class IKPigeon(PigeonEnv3Joints):
         for i in range(len(self.joints)):
             # "action space" should reflect real joint speed derived using Jacobian
             if self.velocity_control:
-                self.joints[i].motorSpeed = np.clip(action[i], float(- MAX_JOINT_SPEED), float(MAX_JOINT_SPEED)))
+                self.joints[i].motorSpeed = np.clip(action[i], float(- MAX_JOINT_SPEED), float(MAX_JOINT_SPEED))
             else:
                 self.joints[i].motorSpeed = float(MAX_JOINT_SPEED * (VELOCITY_WEIGHT ** i) * np.sign(action[i]))
                 self.joints[i].maxMotorTorque = float(
