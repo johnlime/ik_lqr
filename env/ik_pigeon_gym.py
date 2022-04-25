@@ -140,26 +140,56 @@ class IKPigeon(PigeonEnv3Joints):
         assert self.observation_space.contains(obs)
         return obs
 
-
-
-def calc_end_effector_pos(body_to_head_angles):
+"""
+Misc functions that may be useful for this environment
+"""
+def calc_end_effector_pos(theta):
     """
-    body_to_head_angles: array of joint angles starting from those
+    theta: 1-D array of joint angles starting from those
     closest to the body to the those furthest from the body
     """
     end_effector = np.tile(
         np.array([- BODY_WIDTH, BODY_HEIGHT]).astype(np.float),
-        (len(body_to_head_angles), 1))
+        (len(theta), 1))
 
     angle_cumul = 0
-    i = 0
-    for i in range(len(body_to_head_angles)):
-        angle_cumul += body_to_head_angles[i]
+    coef = 1
+    for i in range(len(theta)):
+        angle_cumul += theta[i]
         coef = 2 * LIMB_WIDTH
-        if i == len(body_to_head_angles) - 1:
+        if i == len(theta) - 1:
             coef = HEAD_WIDTH
         # flip angle_tmp by the y axis before output
         end_effector[i:, :] -= coef * \
             np.array([np.cos(angle_cumul), np.sin(angle_cumul)])
 
     return end_effector
+
+
+def get_jacobian(theta):
+    n = len(theta)
+    Jacobian = np.zeros((2, n))
+    # additional variables
+    coef = 1
+    theta_j_sum = 0
+    # masked array for sum of theta excluding l differentiator
+    masked_theta = np.ma.array(theta, mask = False)
+    for l in range(n):
+        masked_theta.mask[l] = True
+        for i in range(l, n):
+            # determine coefficient (length of limb assigned to joint)
+            coef = 2 * LIMB_WIDTH
+            if i == len(theta) - 1:
+                coef = HEAD_WIDTH
+            # pre-calculate sum of angles excluding l
+            theta_j_sum = masked_theta[:i + 1].sum()
+            # sinusoidal gradients
+            Jacobian[0][l] = coef * ( \
+                np.sin(theta[l]) * np.cos(theta_j_sum) - \
+                np.cos(theta[l]) * np.sin(theta_j_sum))
+            Jacobian[1][l] = coef * ( \
+                np.sin(theta[l]) * np.sin(theta_j_sum) - \
+                np.cos(theta[l]) * np.cos(theta_j_sum))
+        # revert the masked_theta masks
+        masked_theta.mask[l] = False
+    return Jacobian
