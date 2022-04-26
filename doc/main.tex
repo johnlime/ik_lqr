@@ -1,0 +1,71 @@
+% ===============================================
+% Template Info/Credits
+%
+% Proof template for real analysis
+% Diana Davis
+% Creative Commons 4.0
+% https://www.overleaf.com/latex/templates/proof-template-for-real-analysis/ztkshxkdstfk
+% ===============================================
+
+\documentclass{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amsthm,amssymb,hyperref}
+
+\newcommand{\R}{\mathbf{R}}
+\newcommand{\Z}{\mathbf{Z}}
+\newcommand{\N}{\mathbf{N}}
+\newcommand{\Q}{\mathbf{Q}}
+
+\newenvironment{theorem}[2][Theorem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{lemma}[2][Lemma]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{exercise}[2][Exercise]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{question}[2][Question]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{corollary}[2][Corollary]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
+\newenvironment{solution}{\begin{proof}[Solution]}{\end{proof}}
+
+\begin{document}
+
+% ------------------------------------------ %
+%                 START HERE                  %
+% ------------------------------------------ %
+
+\title{Proof 1} % Replace with appropriate title
+\author{Author's Name\\Math 790, Real Analysis} % Replace "Author's Name" with your name
+
+\maketitle
+
+% -----------------------------------------------------
+% The following two environments (theorem, proof) are
+% where you will enter the statement and proof of your
+% first problem for this assignment.
+%
+% In the theorem environment, you can replace the word
+% "theorem" in the \begin and \end commands with
+% "exercise", "problem", "lemma", etc., depending on
+% what you are submitting.
+% -----------------------------------------------------
+
+\begin{theorem}{(Page 4 $\#$ 6)}
+For any metric space $E$, the entire space $E$ is an open set.
+\end{theorem}
+
+\begin{proof}
+Replace this text with the details of your proof. Mathematical symbols go between dollar signs, like this: $E$, \emph{not} in plain text like this: E. If there are more symbols you want, such as $\in$, you can find them at\\ \url{http://detexify.kirelabs.org/classify.html}. If you want to set expressions or equations out from the text so that they are more readable (great idea!), put them between double dollar signs: $$|x-x_0| < \delta \implies |f(x)-f(x_0)| < \epsilon.$$
+The small square marks the end of the proof.
+\end{proof}
+
+
+% ---------------------------------------------------
+% Anything after the \end{document} will be ignored by the typesetting.
+% ----------------------------------------------------
+
+\end{document}
