@@ -2,7 +2,7 @@ import gym
 import numpy as np
 import pickle
 
-with open('run/discrete_cartpole_dynamics/cartpole_system_model/dare_controller.pkl', 'rb') as filepath:
+with open('run/continuous_cartpole_dynamics/cartpole_system_model/best_care_controller.pkl', 'rb') as filepath:
     controller_dict = pickle.load(filepath)
 K = controller_dict['K']
 
