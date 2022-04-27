@@ -38,7 +38,7 @@
 %                 START HERE                  %
 % ------------------------------------------ %
 
-\title{Jacobian of n-Joint End-Effector} % Replace with appropriate title
+\title{Jacobian of n-DOF End-Effectors} % Replace with appropriate title
 \author{johnlime} % Replace "Author's Name" with your name
 
 \maketitle
@@ -54,13 +54,153 @@
 % what you are submitting.
 % -----------------------------------------------------
 
-\begin{theorem}{(Page 4 $\#$ 6)}
-For any metric space $E$, the entire space $E$ is an open set.
-\end{theorem}
+\begin{problem}{}
+  Obtain the Jacobian for the end effector of a 2-dimensional $n$-DOF arm (\verb|IKPigeon|).
+\end{problem}
 
 \begin{proof}
-Replace this text with the details of your proof. Mathematical symbols go between dollar signs, like this: $E$, \emph{not} in plain text like this: E. If there are more symbols you want, such as $\in$, you can find them at\\ \url{http://detexify.kirelabs.org/classify.html}. If you want to set expressions or equations out from the text so that they are more readable (great idea!), put them between double dollar signs: $$|x-x_0| < \delta \implies |f(x)-f(x_0)| < \epsilon.$$
-The small square marks the end of the proof.
+  Let the position of the end effector of the arm be $(x, y)$.
+
+  \begin{align}
+    x &= - \sum^n_i C_i \cos \left( \sum^i_j \theta_j \right) \\
+    y &= - \sum^n_i C_i \sin \left( \sum^i_j \theta_j \right)
+  \end{align}
+  where $C_i$ is the length of the limb assigned to the $i$th joint, and $/theta_i$ is its angle.
+
+  The Jacobian matrix $J$ is composed of the gradient of each of the positions relative to $\theta$ for all joints.
+
+  \begin{equation}
+    J =
+    \begin{bmatrix}
+      \frac {\partial x} {\partial \theta_0} & \frac {\partial x} {\partial \theta_1} & ... & \frac {\partial x} {\partial \theta_n} \\
+      \frac {\partial y} {\partial \theta_0} & \frac {\partial y} {\partial \theta_1} & ... & \frac {\partial y} {\partial \theta_n} \\
+    \end{bmatrix}
+  \end{equation}
+
+  $\frac {\partial x} {\partial \theta_l}$ and $\frac {\partial y} {\partial \theta_l}$ must be calculated for each joint $l$.
+
+  We first calculate the former gradient.
+  \begin{align*}
+    \frac {\partial x} {\partial \theta_l}
+      &= \frac {\partial} {\partial \theta_l}
+        \left(
+          - \sum^{l-1}_i C_i \cos \left( \sum^i_j \theta_j \right)
+          - \sum^n_l C_i \cos \left( \theta_l + \sum^i_{j \ne l} \theta_j \right)
+        \right) \\
+      &= \frac {\partial} {\partial \theta_l}
+        \left(
+          - \sum^n_l C_i \cos \left( \theta_l + \sum^i_{j \ne l} \theta_j \right)
+        \right)
+      && \because \frac {\partial x} {\partial \theta_l} \cos \left( \sum^i_j \theta_j \right) = 0 \thickspace \text{when} \thickspace i < l \\
+      &= - \frac {\partial} {\partial \theta_l}
+        \left(
+          \sum^n_l C_i
+            \left(
+              \cos \theta_l \cos \left( \sum^i_{j \ne l} \theta_j \right) +
+              \sin \theta_l \sin \left( \sum^i_{j \ne l} \theta_j \right)
+            \right)
+        \right) \\
+      &= - \sum^n_l C_i \frac {\partial} {\partial \theta_l}
+        \left(
+          \cos \theta_l \cos \left( \sum^i_{j \ne l} \theta_j \right) +
+          \sin \theta_l \sin \left( \sum^i_{j \ne l} \theta_j \right)
+        \right) \\
+      &=
+      - \sum^n_l C_i
+      \left(
+        \left(
+          \left(
+            \frac {\partial} {\partial \theta_l} \cos \theta_l
+          \right) \cos \left( \sum^i_{j \ne l} \theta_j \right)
+          +
+          \cos \theta_l
+          \left(
+            \frac {\partial} {\partial \theta_l}
+            \cos \left( \sum^i_{j \ne l} \theta_j \right)
+          \right)
+        \right) \right. \\
+        &+ \left.
+        \left(
+          \left(
+            \frac {\partial} {\partial \theta_l} \sin \theta_l
+          \right) \sin \left( \sum^i_{j \ne l} \theta_j \right)
+          +
+          \sin \theta_l
+          \left(
+            \frac {\partial} {\partial \theta_l}
+            \sin \left( \sum^i_{j \ne l} \theta_j \right)
+          \right)
+        \right)
+      \right)
+  \end{align*}
+
+  Since
+  $\frac {\partial} {\partial \theta_l}
+  \cos \left( \sum^i_{j \ne l} \theta_j \right) = 0$
+  and
+  $\frac {\partial} {\partial \theta_l}
+  \sin \left( \sum^i_{j \ne l} \theta_j \right) = 0$,
+
+  \begin{align*}
+    \frac {\partial x} {\partial \theta_l}
+      &=
+      - \sum^n_l C_i
+      \left(
+        \left(
+          \left(
+            \frac {\partial} {\partial \theta_l} \cos \theta_l
+          \right) \cos \left( \sum^i_{j \ne l} \theta_j \right)
+        \right)
+        +
+        \left(
+          \left(
+            \frac {\partial} {\partial \theta_l} \sin \theta_l
+          \right) \sin \left( \sum^i_{j \ne l} \theta_j \right)
+        \right)
+      \right) \\
+      &=
+      - \sum^n_l C_i
+      \left(
+        \left(
+          - \sin \theta_l
+        \right) \cos \left( \sum^i_{j \ne l} \theta_j \right)
+        +
+        \left(
+          \cos \theta_l
+        \right) \sin \left( \sum^i_{j \ne l} \theta_j \right)
+      \right) \\
+      &=
+      \sum^n_l C_i
+      \left(
+        \sin \theta_l \cos \left( \sum^i_{j \ne l} \theta_j \right)
+        -
+        \cos \theta_l \sin \left( \sum^i_{j \ne l} \theta_j \right)
+      \right)
+  \end{align*}
+
+  Therefore, the former gradient $\frac {\partial x} {\partial \theta_l}$ can be expressed as the following.
+
+  \begin{equation}
+    \frac {\partial x} {\partial \theta_l} =
+      \sum^n_l C_i
+      \left(
+        \sin \theta_l \cos \left( \sum^i_{j \ne l} \theta_j \right)
+        -
+        \cos \theta_l \sin \left( \sum^i_{j \ne l} \theta_j \right)
+      \right)
+  \end{equation}
+
+  Similarly, the latter gradient $\frac {\partial y} {\partial \theta_l}$ can be expressed as the following.
+
+  \begin{equation}
+    \frac {\partial y} {\partial \theta_l} =
+      \sum^n_l C_i
+      \left(
+        \sin \theta_l \sin \left( \sum^i_{j \ne l} \theta_j \right)
+        -
+        \cos \theta_l \cos \left( \sum^i_{j \ne l} \theta_j \right)
+      \right)
+  \end{equation}
 \end{proof}
 
 
