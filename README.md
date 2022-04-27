@@ -45,6 +45,7 @@ https://github.com/johnlime/ik_lqr/tree/master/run/continuous_cartpole_dynamics
 https://github.com/johnlime/ik_lqr/tree/master/run/discrete_cartpole_dynamics
 
 ### Inverse Kinematics using Pseudoinverse of Jacobian
+* Uses the ["pigeon" environment](https://github.com/johnlime/pigeon_head_bob)
 * Jacobian matrix calculated [manually](https://github.com/johnlime/ik_lqr/tree/master/doc/main.pdf).
 * Demo:
 ```
