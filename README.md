@@ -20,3 +20,5 @@ https://github.com/johnlime/ik_lqr/tree/master/run/continuous_cartpole_dynamics
 * Linear system classification analysis for $T$
 
 https://github.com/johnlime/ik_lqr/tree/master/run/discrete_cartpole_dynamics
+
+## Inverse Kinematics using Pseudoinverse of Jacobian
