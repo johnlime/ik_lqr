@@ -35,7 +35,7 @@ python run/cartpole.py
 https://github.com/johnlime/ik_lqr/tree/master/run/continuous_cartpole_dynamics
 
 ### Discrete Cartpole Control \[Suboptimal\]
-* Control system modeled using gradient descent on $\dot x = Ax + Bu$
+* Control system modeled using gradient descent on $x[t+1] = Ax[t] + Bu[t]$
 * Cartpole control solver
   * Manual eigenvalue placement
   * Search $T = A - BK$ that maximizes the return using CMA-ES
